@@ -1,0 +1,5 @@
+Employee_name = input("Enter the  employee Name : ")
+Employee_id = int(input("Enter the employee id :"))
+Basic_Monthly_salary = int(input(" Enter the employee basic monthly salary: "))
+Special_Allowances = int(input(" Enter the account of Special Allowances"))
+Bouns_percentage = int(input("Enter the bouns withou % symbol"))
