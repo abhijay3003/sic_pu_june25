@@ -1,0 +1,9 @@
+Numbre = int (input("Enter the number : "))
+list = []
+while(Numbre > 0):
+    last_digit = Numbre % 10
+    list.append(last_digit)
+    Numbre= Numbre // 10
+unique_digits = sorted(set(list))
+print("2nd samllest digits is : ",end=" ")
+print(unique_digits[1]) 
