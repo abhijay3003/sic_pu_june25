@@ -1,0 +1,8 @@
+original_word = input("enter the original string: ")
+rotated_word = input("enter the rotated string: ")
+
+if len(original_word) != len(rotated_word):
+    print(-1)
+else:
+    temp_str = rotated_word * 2
+    print(1 if original_word in temp_str else -1)
