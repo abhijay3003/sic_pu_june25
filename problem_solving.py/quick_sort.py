@@ -15,4 +15,4 @@ def partition(array, low, high):
     return i + 1
 sample_data = [33, 10, 59, 26, 41, 72, 5]
 quick_sort(sample_data, 0, len(sample_data) - 1)
-print("Sorted:", sample_data)
+print("Sorted:", sample_data)        
