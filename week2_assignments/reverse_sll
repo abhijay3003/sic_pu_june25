@@ -1,0 +1,12 @@
+def reverse_sll(head):
+    prev = None
+    current = head
+    while current:
+        next_node = current['next']
+        current['next'] = prev
+        prev = current
+        current = next_node
+    return prev
+
+def create_node(data, next_node=None):
+    return {'data': data, 'next': next_node}
