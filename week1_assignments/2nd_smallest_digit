@@ -1,7 +1,10 @@
+import pdb
+pdb.set_trace()
 Numbre = int (input("Enter the number : "))
 list = []
 while(Numbre > 0):
     last_digit = Numbre % 10
+    print(last_digit)
     list.append(last_digit)
     Numbre= Numbre // 10
 unique_digits = sorted(set(list))

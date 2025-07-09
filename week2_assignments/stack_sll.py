@@ -7,8 +7,8 @@ def pop(stack):
         return None
     return stack.pop(0)
 
-# Example usage:
+
 stack = []
 push(stack, 5)
 push(stack, 15)
-print(pop(stack))  # 15
+print(pop(stack))  
