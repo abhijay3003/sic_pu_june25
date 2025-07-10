@@ -57,10 +57,20 @@ print(arr) """
 ''' arr7 = arr2.reshape(-1, 4) # Numpy predicts and fixes number of rows
 arr8 = arr2.reshape(-1, -1) #ValueError. Can only specify one unknown dimension '''
   # import pdb
- # pdb.set_trace() # debug     #  sooooo important
-matrix1 = np.array([[3, 4, 5], [2, 6, 9]])
-matrix2 = np.array([[3, 4], [3, 5], [2, 6]])
+ # pdb.set_trace() # debug                                                            #  sooooo important
+ # to multiply two matxics we use dot operation 
+''' matrix1 = np.array([[3, 4, 5], [2, 6, 9]]) # 2*3
+matrix2 = np.array([[3, 4], [3, 5], [2, 6]]) # 3*2
+matrix3 = np.dot(matrix1, matrix2) # RESULT is 2 * 2 matrix '''
+ # to add a scaler or number to a each number in the matrix we use this 
+''' array = np.array([2, 4, 6, 8, 9, 19])
+array2 = array + 5  # Broadcasting. Adding a scalar quantity to every element of the array '''
+def f(x, y):
+	return 10 * x + y
 
-matrix3 = np.dot(matrix1, matrix2)
-
-print('Matrix3=\n', matrix3)
+my_aaray = np.fromfunction(f, (5, 4), dtype = int)
+print(my_aaray)
+print(my_aaray[2, 3]) # my_array[2][3]
+print(my_aaray[0:5, 1]) # From Row-1 to Row-5, print the 2nd element
+print(my_aaray[ : , 1]) # From all rows, print 2nd element
+print(my_aaray[1:3, : ]) # From Row-2 to Row-3, print all elements
