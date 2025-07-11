@@ -1,0 +1,31 @@
+class node :
+      def __init__(self,data):
+            self.data = data
+            self.rlink = None
+            self.llink = None
+def insert(root,data):
+      if root is None:
+        return node(data)
+      if data < root.data:
+        root.llink = insert(root.llink, data)
+      else:
+        root.rlink = insert(root.rlink, data)
+      return root
+
+def height(root):
+    if root is None:
+        return -1  # height in terms of edges
+    left = height(root.llink)
+    right = height(root.rlink)
+    return 1 + max(left, right)
+
+
+n = int(input())
+values = list(map(int, input().split()))
+
+root = None
+for val in values:
+    root = insert(root, val)
+
+print(height(root))
+

@@ -1,5 +1,5 @@
 import pdb
-pdb.set_trace()
+pdb.set_trace() # debug
 Numbre = int (input("Enter the number : "))
 list = []
 while(Numbre > 0):
