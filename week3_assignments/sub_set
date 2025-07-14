@@ -1,0 +1,12 @@
+def is_subset_sum(arr, n, total):
+    if total == 0:
+        return True
+    if n == 0:
+        return False
+    if arr[n-1] > total:
+        return is_subset_sum(arr, n-1, total)
+    return is_subset_sum(arr, n-1, total) or is_subset_sum(arr, n-1, total - arr[n-1])
+
+arr = list(map(int, input("Enter array elements: ").split()))
+target = int(input("Enter target sum: "))
+print("Subset sum exists:" if is_subset_sum(arr, len(arr), target) else "No subset sum found.")
