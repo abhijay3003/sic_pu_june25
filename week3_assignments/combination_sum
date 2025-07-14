@@ -1,0 +1,12 @@
+def combination_sum(arr, target, result=[], index=0):
+    if target == 0:
+        print(result)
+        return
+    if target < 0:
+        return
+    for i in range(index, len(arr)):
+        combination_sum(arr, target - arr[i], result + [arr[i]], i)
+
+arr = list(map(int, input("Enter array elements: ").split()))
+target = int(input("Enter target sum: "))
+combination_sum(arr, target)

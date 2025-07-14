@@ -1,0 +1,14 @@
+def is_palindrome(s):
+    return s == s[::-1]
+
+def partition(s, path=[]):
+    if not s:
+        print(path)
+        return
+    for i in range(1, len(s)+1):
+        prefix = s[:i]
+        if is_palindrome(prefix):
+            partition(s[i:], path + [prefix])
+
+s = input("Enter string to partition: ")
+partition(s)
