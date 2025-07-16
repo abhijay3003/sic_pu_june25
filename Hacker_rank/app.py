@@ -1,84 +1,83 @@
 import streamlit as st
-from PIL import Image
-from datetime import datetime
-from modules.sales_manager import SalesManager
+import pandas as pd
 import matplotlib.pyplot as plt
+from food_wastage_manager import FoodWastageManager  # Custom module for managing food data
 
-# Create an instance of SalesManager connected to the carwash database
-manager = SalesManager("C:/learning/sic_pu_june25/Hacker_rank/db/carwash.db")
+# 🎛️ Initialize manager to access food wastage data from SQLite database
+manager = FoodWastageManager("food_wastage.db")
 
-# Header for the dashboard
-st.title("🚗 Car Wash Sales Dashboard")
+# 🚀 Set page layout and title
+st.set_page_config(page_title="Hostel Food Wastage Dashboard", layout="wide")
+st.title("🍽️ College Hostel Food Wastage Dashboard")
 
-# --- Monthly Sales Overview ---
-st.subheader("Monthly Sales Overview")
+# 🔢 SECTION 1 — Summary of Totals
+st.subheader("Total Food Prepared, Consumed, and Wasted")
+food_totals = manager.total_food_prepared_consumed_wasted()
+st.metric("🍳 Food Prepared", f"{food_totals['prepared']} units")
+st.metric("🥣 Food Consumed", f"{food_totals['consumed']} units")
+st.metric("🗑️ Food Wasted", f"{food_totals['wasted']} units")
 
-# Year picker using unique years in dataset
-year = st.selectbox("Select Year", sorted(manager.df['date'].dt.year.unique(), reverse=True))
+st.divider()
 
-# Get monthly sales for selected year
-monthly_sales = manager.calculate_monthly_sales_year(year)
-st.bar_chart(monthly_sales)
+# Utility function to show compact line chart
+def compact_line_chart(data, title, ylabel):
+    fig, ax = plt.subplots(figsize=(4.5, 2.5))  # width x height in inches
+    ax.plot(data.index, data.iloc[:, 0], marker='o', linewidth=1)
+    ax.set_title(title, fontsize=5)
+    ax.set_ylabel(ylabel, fontsize=4)
+    ax.tick_params(axis='x', labelsize=5)
+    ax.tick_params(axis='y', labelsize=5)
+    st.pyplot(fig)
 
-# --- Sales by Time Block ---
-st.subheader("Sales by Time Block")
-time_sales = manager.categorize_time_blocks()
-st.write(time_sales)
+# 📅 Daily Food Prepared
+st.subheader("📅 Daily Food Prepared")
+prepared_daily = manager.df[['date', 'food_prepared']].set_index('date')
+compact_line_chart(prepared_daily, "Daily Food Prepared", "Units")
 
-# Pie chart visualization for sales by time
-fig, ax = plt.subplots()
-ax.pie(time_sales, labels=time_sales.index, autopct='%1.1f%%', startangle=90)
-plt.title("Sales Distribution by Time of Day")
-st.pyplot(fig)
+# 🥣 Daily Food Consumed
+st.subheader("📅 Daily Food Consumed")
+consumed_daily = manager.df[['date', 'food_consumed']].set_index('date')
+compact_line_chart(consumed_daily, "Daily Food Consumed", "Units")
 
-# --- Inactive Customers ---
-st.subheader("Inactive Customers (2+ Months)")
-inactive_list = manager.detect_inactive_customers()
-st.write(inactive_list)
+# 🗑️ Daily Food Wasted
+st.subheader("📅 Daily Food Wasted")
+wasted_daily = manager.get_daily_wastage().set_index('date')
+compact_line_chart(wasted_daily, "Daily Food Wasted", "Units")
 
-# --- Valuable Inactive Customers ---
-st.subheader("Valuable Inactive Customers")
+# 👥 Students Served Per Day
+st.subheader("👥 Daily Students Served")
+students_served_daily = manager.df[['date', 'students_served']].set_index('date')
+compact_line_chart(students_served_daily, "Students Served", "Count")
 
-# Input: minimum total spending to be considered "valuable"
-min_amount = st.number_input("Minimum total amount spent", min_value=0, value=100)
+# 🍽️ Average Waste Per Student
+st.subheader("📊 Average Food Wasted per Student")
+avg_waste_daily = manager.get_avg_wastage_per_student().set_index('date')
+compact_line_chart(avg_waste_daily, "Waste per Student", "Units")
 
-# Get valuable inactive customers from manager
-valuable_customers = manager.valuable_inactive_customers(days=60, min_total_amount=min_amount)
-if not valuable_customers.empty:
-    st.dataframe(valuable_customers)
+# 🚨 High Wastage Threshold Detection
+st.subheader("🚨 High Wastage Alert")
+threshold_limit = st.slider("Set Wastage Threshold (units)", min_value=10, max_value=120, value=30)
+days_exceeding_threshold = wasted_daily[wasted_daily['food_wasted'] > threshold_limit]
+
+if days_exceeding_threshold.empty:
+    st.success("✅ No days exceeded the selected wastage threshold.")
 else:
-    st.info("No valuable inactive customers found.")
+    st.warning("⚠️ Days with High Wastage:")
+    st.dataframe(days_exceeding_threshold)
 
-# --- Special Pricing Months ---
-st.subheader("Special Pricing Months")
+# 🏆 Top 5 Days of Highest Food Wastage
+st.subheader("🏆 Top 5 Days of Highest Food Wastage")
+top_5_days = wasted_daily.sort_values(by='food_wasted', ascending=False).head(5)
+st.table(top_5_days)
 
-# Identify months for discounts and surcharges
-discount_months = manager.months_for_discount()
-surcharge_months = manager.months_for_surcharge()
-st.markdown(f"**Discount Months:** {discount_months if discount_months else 'None'}")
-st.markdown(f"**Surcharge Months:** {surcharge_months if surcharge_months else 'None'}")
+# 💡 Tips to Reduce Wastage
+st.subheader("💡 Tips for Reducing Food Wastage")
+for tip in manager.recommend_reduction_tips():
+    st.write(f"• {tip}")
 
-# --- Export Pie Chart ---
-if st.button("Export Pie Chart Image"):
-    try:
-        manager.export_pie_chart()
-        st.success("Pie chart exported successfully!")
-    except Exception as e:
-        st.error(f"Export failed: {e}")
-
-# --- Preview Pie Chart ---
-st.subheader("Exported Pie Chart Preview")
-try:
-    image = Image.open("C:/learning/sic_pu_june25/Hacker_rank/charts/sales_pie_chart.png")
-    st.image(image, caption="Sales by Time Block", use_column_width=True)
-except FileNotFoundError:
-    st.warning("Chart not found yet—export it first.")
-
-# --- Monthly Sales by Service ---
-st.subheader("Monthly Sales by Service")
-sales_by_service = manager.calculate_monthly_sales_by_service(year)
-if not sales_by_service.empty:
-    st.dataframe(sales_by_service)
-    st.line_chart(sales_by_service)
+# 📌 Summary Status
+st.subheader("📌 Summary Indicator")
+if food_totals['wasted'] > food_totals['prepared'] * 0.10:
+    st.warning("⚠️ Over 10% of prepared food is being wasted. Consider adjusting preparation or serving strategy.")
 else:
-    st.info("No service-wise data available.")
+    st.success("✅ Food wastage is well within control. Keep monitoring and improving!")
