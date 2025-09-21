@@ -1,0 +1,10 @@
+[
+  {"id": 1, "q": "What is the primary purpose of machine guards according to the OSHA guidance?"},
+  {"id": 2, "q": "List the six steps to create a safe machine described by SICK."},
+  {"id": 3, "q": "According to EN ISO 13849-1, how is Performance Level (PL) used in designing machine control?"},
+  {"id": 4, "q": "What is the recommended minimum safe distance from hazardous moving parts for a human hand?"},
+  {"id": 5, "q": "Which standards cover functional safety for machine controls (name at least two in the pack)?"},
+  {"id": 6, "q": "What are common guarding methods to prevent fingertip access to rotating shafts?"},
+  {"id": 7, "q": "Summarize the steps to assess residual risk after safeguards are in place."},
+  {"id": 8, "q": "Does the EU Machinery Regulation 2023/1230 change the essential health and safety requirements for interlocking guards?"}
+]

@@ -1,0 +1,14 @@
+fastapi
+uvicorn[standard]
+sentence-transformers==2.2.2
+faiss-cpu
+pdfminer.six
+tqdm
+python-multipart
+sqlite-utils
+whoosh
+rank_bm25
+numpy
+scikit-learn
+pydantic
+huggingface_hub==0.16.4
